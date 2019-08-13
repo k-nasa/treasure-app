@@ -1,6 +1,8 @@
 package service
 
 import (
+	"database/sql"
+
 	"github.com/jmoiron/sqlx"
 	"github.com/pkg/errors"
 	"github.com/voyagegroup/treasure-app/dbutil"
@@ -15,6 +17,24 @@ type Article struct {
 
 func NewArticleService(db *sqlx.DB) *Article {
 	return &Article{db}
+}
+
+func (a *Article) GetArticleComment(id int64) (*model.ArticleResp, error) {
+	article, err := repository.FindArticle(a.db, id)
+
+	if err != nil {
+		return nil, err
+	}
+
+	comments, err := repository.FindCommentsByAirticleID(a.db, article.ID)
+
+	if err != nil && err == sql.ErrNoRows {
+		return &model.ArticleResp{article, make([]*model.Comment, 0)}, nil
+	} else if err != nil {
+		return nil, err
+	}
+
+	return &model.ArticleResp{article, comments}, nil
 }
 
 func (a *Article) Update(id int64, newArticle *model.Article) error {

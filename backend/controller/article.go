@@ -51,7 +51,15 @@ func (a *Article) Show(w http.ResponseWriter, r *http.Request) (int, interface{}
 		return http.StatusInternalServerError, nil, err
 	}
 
-	return http.StatusCreated, article, nil
+	comments, err := repository.FindCommentsByAirticleID(a.dbx, article.ID)
+
+	if err != nil && err == sql.ErrNoRows {
+		return http.StatusNotFound, nil, err
+	} else if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusCreated, model.ArticleResp{article, comments}, nil
 }
 
 func (a *Article) Create(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {
@@ -59,6 +67,14 @@ func (a *Article) Create(w http.ResponseWriter, r *http.Request) (int, interface
 	if err := json.NewDecoder(r.Body).Decode(&newArticle); err != nil {
 		return http.StatusBadRequest, nil, err
 	}
+
+	user, err := httputil.GetUserFromContext(r.Context())
+
+	if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	newArticle.UserID = &user.ID
 
 	articleService := service.NewArticleService(a.dbx)
 	id, err := articleService.Create(newArticle)
