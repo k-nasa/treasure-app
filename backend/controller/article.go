@@ -51,7 +51,15 @@ func (a *Article) Show(w http.ResponseWriter, r *http.Request) (int, interface{}
 		return http.StatusInternalServerError, nil, err
 	}
 
-	return http.StatusCreated, article, nil
+	comments, err := repository.FindCommentsByAirticleID(a.dbx, article.ID)
+
+	if err != nil && err == sql.ErrNoRows {
+		return http.StatusNotFound, nil, err
+	} else if err != nil {
+		return http.StatusInternalServerError, nil, err
+	}
+
+	return http.StatusCreated, model.ArticleResp{article, comments}, nil
 }
 
 func (a *Article) Create(w http.ResponseWriter, r *http.Request) (int, interface{}, error) {

@@ -6,3 +6,8 @@ type Article struct {
 	Title  string `db:"title" json:"title"`
 	Body   string `db:"body" json:"body"`
 }
+
+type ArticleResp struct {
+	Article  *Article
+	Comments []*Comment
+}

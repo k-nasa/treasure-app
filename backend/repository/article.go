@@ -18,7 +18,7 @@ func AllArticle(db *sqlx.DB) ([]model.Article, error) {
 func FindArticle(db *sqlx.DB, id int64) (*model.Article, error) {
 	a := model.Article{}
 	if err := db.Get(&a, `
-SELECT id, title, body, user_id FROM article WHERE id = ?
+SELECT id, title, body, user_id FROM article WHERE id = ? LIMIT 1
 `, id); err != nil {
 		return nil, err
 	}

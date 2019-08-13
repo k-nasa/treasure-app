@@ -8,6 +8,9 @@ TOKEN_FILE := .idToken
 ARTICLE_ID:=1
 ARTICLE_TITLE:=title
 ARTICLE_BODY:=body
+COMMENT_ID :=1
+COMMENT_BODY :=wow!!
+COMMENT_BODY2 := pipipipipi
 
 create-token:
 	go run ./cmd/customtoken/main.go $(UID) $(TOKEN_FILE)
@@ -29,6 +32,12 @@ req-articles-update:
 
 req-articles-delete:
 	curl -v -XDELETE -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/articles/$(ARTICLE_ID)
+
+req-comment-post:
+	curl -v -XPOST -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/comments -d '{"article_id": $(ARTICLE_ID), "body": "$(ARTICLE_BODY)"}'
+
+req-comment-update:
+	curl -v -XPUT -H "Authorization: Bearer $(shell cat ./$(TOKEN_FILE))" $(HOST):$(PORT)/comments/$(COMMENT_ID) -d '{"body": "$(COMMENT_BODY2)" }'
 
 req-public:
 	curl -v $(HOST):$(PORT)/public
