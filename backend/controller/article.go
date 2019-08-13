@@ -60,7 +60,6 @@ func (a *Article) Create(w http.ResponseWriter, r *http.Request) (int, interface
 		return http.StatusBadRequest, nil, err
 	}
 
-	// TODO
 	user, err := httputil.GetUserFromContext(r.Context())
 
 	if err != nil {
