@@ -15,7 +15,7 @@ type Article struct {
 	db *sqlx.DB
 }
 
-func NewArticleService(db *sqlx.DB) *Article {
+func NewArticle(db *sqlx.DB) *Article {
 	return &Article{db}
 }
 
