@@ -86,7 +86,7 @@ func (s *Server) Route() *mux.Router {
 	r.Methods(http.MethodGet).Path("/articles").Handler(commonChain.Then(AppHandler{articleController.Index}))
 	r.Methods(http.MethodGet).Path("/articles/{id}").Handler(commonChain.Then(AppHandler{articleController.Show}))
 
-	commentController := controller.NewComment(s.dbx)
+	commentController := controller.NewComment(s.db)
 	r.Methods(http.MethodPost).Path("/comments").Handler(authChain.Then(AppHandler{commentController.Create}))
 	r.Methods(http.MethodPut).Path("/comments/{id}").Handler(authChain.Then(AppHandler{commentController.Update}))
 	// r.Methods(http.MethodDelete).Path("/comments/{id}").Handler(authChain.Then(AppHandler{commentController.Delete}))

@@ -11,3 +11,8 @@ type ArticleResp struct {
 	Article  *Article
 	Comments []*Comment
 }
+
+type ArticleTag struct {
+	Article *Article `json:"article"`
+	TagIDs  []int64  `json:"tag_ids"`
+}
